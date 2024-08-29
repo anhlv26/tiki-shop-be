@@ -81,4 +81,31 @@ const loginUser = (userLogin) => {
   });
 };
 
-module.exports = { createUser, loginUser };
+const updateUser = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: id,
+      });
+
+      console.log("checkUser", checkUser)
+      if (checkUser === null) {
+        resolve({
+          status: "ok",
+          message: "user doesn't exist",
+        });
+      }
+
+      const updateUser = await User.findByIdAndUpdate(id, data, { new: true });
+      resolve({
+        status: "ok",
+        message: "success",
+        data: updateUser,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+module.exports = { createUser, loginUser, updateUser };
