@@ -1,6 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const { default: mongoose } = require("mongoose");
+const routes = require("./routes");
+const bodyParser = require("body-parser");
 
 dotenv.config();
 
@@ -8,12 +10,12 @@ const app = express();
 
 const port = process.env.PORT || 3000;
 
-app.get("/", (req, res) => res.send("Hello World hehe"));
+app.use(bodyParser.json())
+
+routes(app)
 
 mongoose
-  .connect(
-    `mongodb+srv://vietanhle2662001:${process.env.MONGO_DB}@cluster0.jurup.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-  )
+  .connect(`${process.env.MONGO_DB}`)
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.log(err));
 
