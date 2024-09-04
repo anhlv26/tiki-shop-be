@@ -51,7 +51,6 @@ const loginUser = (userLogin) => {
         });
       }
       const comparePassword = bcrypt.compareSync(password, checkUser.password);
-      console.log(comparePassword);
       if (!comparePassword) {
         resolve({
           status: "ok",
@@ -88,7 +87,6 @@ const updateUser = (id, data) => {
         _id: id,
       });
 
-      console.log("checkUser", checkUser)
       if (checkUser === null) {
         resolve({
           status: "ok",
@@ -108,4 +106,77 @@ const updateUser = (id, data) => {
   });
 };
 
-module.exports = { createUser, loginUser, updateUser };
+const deleteUser = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const checkUser = await User.findOne({
+        _id: id,
+      });
+
+      if (checkUser === null) {
+        resolve({
+          status: "ok",
+          message: "user doesn't exist",
+        });
+      }
+      const deleteUser = await User.findByIdAndDelete(id);
+      resolve({
+        status: "ok",
+        message: "success",
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getAllUsers = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allUsers = await User.find();
+      resolve({
+        status: "ok",
+        message: "success",
+        data: allUsers,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+const getDetailUser = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const user = await User.findOne({
+        _id: id,
+      });
+
+      if (user === null) {
+        resolve({
+          status: "ok",
+          message: "user doesn't exist",
+        });
+      }
+      resolve({
+        status: "ok",
+        message: "success",
+        data: user,
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+};
+
+
+
+module.exports = {
+  createUser,
+  loginUser,
+  updateUser,
+  deleteUser,
+  getAllUsers,
+  deleteUser,
+  getDetailUser,
+};
