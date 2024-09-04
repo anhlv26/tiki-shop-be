@@ -1,9 +1,5 @@
 const express = require("express");
 const productController = require("../controllers/ProductController");
-const {
-  authMiddleware,
-  authUserMiddleware,
-} = require("../middleware/authMiddleware");
 const router = express.Router();
 
 router.post("/create-product", productController.createProduct);

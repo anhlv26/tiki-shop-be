@@ -1,4 +1,3 @@
-const UserService = require("../services/UserService");
 const ProductService = require("../services/ProductService");
 
 const createProduct = async (req, res) => {
@@ -53,7 +52,11 @@ const deleteProduct = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    const response = await ProductService.getAllProducts();
+    const { limit, page } = req.query;
+    const response = await ProductService.getAllProducts(
+      Number(limit),
+      Number(page)
+    );
     return res.status(200).json(response);
   } catch (e) {
     res.status(404).json({ message: e });

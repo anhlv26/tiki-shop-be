@@ -1,6 +1,4 @@
 const Product = require("../models/ProductModel");
-const bcrypt = require("bcrypt");
-const { generalAccessToken, generalRefreshToken } = require("./JwtService");
 
 const createProduct = (newProduct) => {
   return new Promise(async (resolve, reject) => {
@@ -52,7 +50,9 @@ const updateProduct = (id, data) => {
         });
       }
 
-      const updateProduct = await Product.findByIdAndUpdate(id, data, { new: true });
+      const updateProduct = await Product.findByIdAndUpdate(id, data, {
+        new: true,
+      });
       resolve({
         status: "ok",
         message: "success",
@@ -88,16 +88,23 @@ const deleteProduct = (id) => {
   });
 };
 
-const getAllProducts = () => {
+const getAllProducts = (limit = 2, page = 0) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const allProducts = await Product.find();
+      const totalProducts = await Product.countDocuments();
+      const allProducts = await Product.find()
+        .limit(limit)
+        .skip(page * limit);
       resolve({
         status: "ok",
         message: "success",
         data: allProducts,
+        total: totalProducts,
+        pageCurrent: Number(page + 1),
+        totalPages: Math.ceil(totalProducts / limit),
       });
     } catch (e) {
+      console.log(e);
       reject(e);
     }
   });
@@ -132,5 +139,5 @@ module.exports = {
   updateProduct,
   deleteProduct,
   getAllProducts,
-  getDetailProduct
+  getDetailProduct,
 };
